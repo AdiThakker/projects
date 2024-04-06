@@ -1,0 +1,106 @@
+# Ignore Visual Studio files
+.vs/
+*.suo
+*.user
+*.sln.docstates
+
+# Ignore build output
+bin/
+obj/
+
+# Ignore NuGet packages
+*.nuget.props
+*.nuget.targets
+packages/
+
+# Ignore Resharper files
+_ReSharper*/
+
+# Ignore Visual Studio Code files
+.vscode/
+
+# Ignore temporary files
+*.tmp
+*.bak
+*.cache
+
+# Ignore logs
+*.log
+
+# Ignore test results
+TestResults/
+
+# Ignore publish profiles
+*.pubxml
+
+# Ignore SQL Server files
+*.mdf
+*.ldf
+
+# Ignore IIS Express files
+*.pid
+*.ipch
+*.iobj
+*.pdb
+*.ipdb
+
+# Ignore ReSharper cache
+*.resharper
+
+# Ignore TeamCity files
+_TeamCity*
+
+# Ignore StyleCop files
+StyleCop.Cache
+
+# Ignore FxCop files
+*_FxCopReport.xml
+
+# Ignore build manifest
+*.manifest
+
+# Ignore ClickOnce publish settings
+publish/
+
+# Ignore Azure build output
+csx/
+*.build.csdef
+
+# Ignore Visual Studio Online build output
+*.aps
+
+# Ignore Azure Service Fabric files
+AppPackages/
+ServiceFabricBackup/
+*.sfproj
+
+# Ignore CodeRush files
+*.cr/
+
+# Ignore NCrunch files
+*.ncrunch*
+.*crunch*.local.xml
+
+# Ignore JustCode files
+.JustCode
+
+# Ignore JetBrains Rider files
+.idea/
+*.sln.iml
+
+# Ignore Xamarin files
+*.userprefs
+*.userprefs.legacy
+*.sln.dotsettings
+
+# Ignore Unity files
+Library/
+Temp/
+*.unityproj
+*.unitypackage
+*.tmp.meta
+*.pidb.meta
+*.booproj.meta
+*.svd.meta
+*.userprefs.meta
+*.csproj.vspscc
