@@ -18,12 +18,12 @@ T Try<T>(string correlationId, Func<T> run, int currentRetry = 0)
 {
     try
     {
-        Console.Write($"Current Attempt: {currentRetry} - ");
+        Console.Write($"Attempt: {currentRetry} - ");
         var currentState = circuitStatus.TryGetValue(correlationId, out CircuitState value);
         return value switch
         {
             CircuitState.Closed => run(),
-            CircuitState.Open => throw new InvalidOperationException("Circuit is Open cannot perform action"),
+            CircuitState.Open => Break(correlationId, run, "Circuit is Open cannot perform action, Escalating to Circuit-Break!!!"),
             CircuitState.HalfOpen => run(), // go ahead and execute. you could probably use a different strategy here
             _ => throw new NotImplementedException()
         };
@@ -35,7 +35,7 @@ T Try<T>(string correlationId, Func<T> run, int currentRetry = 0)
         return result switch
         {
             (true, _) => Try(correlationId, run, result.current),
-            (false, _) => Break(correlationId, run)
+            (false, _) => Break(correlationId, run, "Retries Exhausted, Escalating to Circuit-Break!!!")
         };
     }
 
@@ -48,11 +48,13 @@ T Try<T>(string correlationId, Func<T> run, int currentRetry = 0)
         Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, currentRetry))).GetAwaiter().GetResult();
         return (true, currentRetry);
     }
+
+
 }
 
-T Break<T>(string correlationId, Func<T> run)
+T Break<T>(string correlationId, Func<T> run, string message)
 {
-    Console.WriteLine($"{correlationId} - Retries Exhausted, Escalating to Circuit-Break!!!");
+    Console.WriteLine($"{message}");
     try
     {
         circuitStatus.AddOrUpdate(correlationId, CircuitState.Open, (key, state) => state = CircuitState.Open);
@@ -66,7 +68,7 @@ T Break<T>(string correlationId, Func<T> run)
                                 Console.WriteLine($"Perform backup operation {count}: status succeeded - {status}");
                                 return status;
                             })
-                            .Count(_ => false);
+                            .Count(_ => _ == false);
         
         var latestState = failures switch
         {
