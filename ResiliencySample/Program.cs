@@ -5,7 +5,7 @@ Random number = new();
 ConcurrentDictionary<string, CircuitState> circuitStatus = new();
 
 Console.WriteLine($"{DateTime.Now} - Start!");
-Try<Unit>("<Unique-Correlation-Id>", () =>
+Try("<Unique-Correlation-Id>", () =>
 {
     Console.WriteLine("Hello, World!");
     return (number.Next(20000) > 5000) ? throw new Exception("Something went wrong!") : new Unit();
