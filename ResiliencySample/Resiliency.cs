@@ -6,7 +6,6 @@ enum CircuitState { Closed = 0, HalfOpen = 1, Open = 2 };
 
 public static class Resiliency
 {
-
     public static Random Number = new();
 
     static ConcurrentDictionary<string, CircuitState> circuitStatus = new();
