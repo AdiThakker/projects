@@ -35,7 +35,7 @@ public static class Resiliency
             };
         }
 
-        (bool retry, int current) Retry(int currentRetry)
+        static (bool retry, int current) Retry(int currentRetry)
         {
             // Check the exception Type and do retries for specific amount of time
             if (currentRetry >= 3) return (false, -1);
@@ -73,7 +73,7 @@ public static class Resiliency
         }
         catch (Exception)
         {
-            // TODO logic to close it 
+            // TODO logic just throw for now
             throw;
         }
     }
