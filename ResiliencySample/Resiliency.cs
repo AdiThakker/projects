@@ -54,24 +54,16 @@ public static class Resiliency
             circuitStatus.AddOrUpdate(correlationId, CircuitState.Open, (key, state) => state = CircuitState.Open);
 
             // Set timeout when the timeout elapses close it or change it to half open
-            var failures = Enumerable.Range(1, 3)
+            var latestState = Enumerable.Range(1, 3)
                                 .Select(count =>
                                 {
                                     Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, count))).GetAwaiter().GetResult();                                
-                                    var status = (Number.Next(int.MaxValue) % 2 == 0 ? true : false); // backup operation status
+                                    var status = Number.Next(int.MaxValue) % 2 == 0; // backup operation status
                                     Console.WriteLine($"Perform backup operation {count}: status succeeded - {status}");
                                     return status;
                                 })
-                                .Count(_ => _ == false);
-            
-            var latestState = failures switch
-            {
-                <= 0 => CircuitState.Closed,
-                1 or 2 => CircuitState.HalfOpen,
-                3 => CircuitState.Open,
-                > 3 => throw new Exception("No possible")
-            };
-            
+                                .Count(_ => _ == false)
+                                .GetCurrentState();
 
             Console.WriteLine($"Timeout complete, Latest State : {latestState}.");
             circuitStatus.AddOrUpdate(correlationId, latestState, (key, state) => state = latestState);
@@ -83,5 +75,16 @@ public static class Resiliency
             // TODO logic to close it 
             throw;
         }
+    }
+
+    private static CircuitState GetCurrentState(this int failures )
+    {
+        return failures switch
+        {
+            <= 0 => CircuitState.Closed,
+            1 or 2 => CircuitState.HalfOpen,
+            3 => CircuitState.Open,
+            > 3 => throw new Exception("No possible")
+        };
     }
 }
