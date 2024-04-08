@@ -53,11 +53,11 @@ public static class Resiliency
         {
             circuitStatus.AddOrUpdate(correlationId, CircuitState.Open, (key, state) => state = CircuitState.Open);
 
-            // Set timeout when the timeout elapses close it or change it to half open
+            // circuit-break
             var latestState = Enumerable.Range(1, 3)
                                 .Select(count =>
                                 {
-                                    Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, count))).GetAwaiter().GetResult();                                
+                                    Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, count))).GetAwaiter().GetResult();  // you can probably sleep till threshold reached                              
                                     var status = Number.Next(int.MaxValue) % 2 == 0; // backup operation status
                                     Console.WriteLine($"Perform backup operation {count}: status succeeded - {status}");
                                     return status;
@@ -67,7 +67,8 @@ public static class Resiliency
 
             Console.WriteLine($"Timeout complete, Latest State : {latestState}.");
             circuitStatus.AddOrUpdate(correlationId, latestState, (key, state) => state = latestState);
-
+            
+            // retry
             return Try(correlationId, run);
         }
         catch (Exception)
