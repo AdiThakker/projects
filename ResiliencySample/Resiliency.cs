@@ -68,7 +68,7 @@ public static class Resiliency
             Console.WriteLine($"Timeout complete, Latest State : {latestState}.");
             circuitStatus.AddOrUpdate(correlationId, latestState, (key, state) => state = latestState);
             
-            // retry
+            // resume
             return Try(correlationId, run);
         }
         catch (Exception)
